@@ -1,5 +1,6 @@
 import express from 'express' //beacuse type is module i should use import instead of require
 import mysql from "mysql";
+import cors from "cors";
 const app =express();
 
 const db= mysql.createConnection({
@@ -11,6 +12,7 @@ const db= mysql.createConnection({
 })
 
 app.use(express.json())
+app.use(cors())
 app.listen(8800, ()=>{
     console.log('connected to backend');
 }
@@ -28,6 +30,7 @@ app.get("/books",(req,res)=>{
         return res.json(data);
     })
 })
+//this endpoint is to add books
 app.post("/books",(req,res)=>{
     //backticks //to test post method use postman get browser otherr postman
     const q= 'INSERT INTO book (`title`,`decription`,`cover`) VALUES(?)';
@@ -46,3 +49,23 @@ db.query(q,[values],(err,data)=>{
 })
 
 })
+
+//this endpoint is to delete
+
+app.delete("/books/:id",(req,res)=>{
+    // id is in url params
+    const bookId =req.params.id;
+    const q="DELETE FROM book where id= ?"
+
+    db.query(q,[bookId],(err,data)=>{
+        if(err) return res.json(err);
+        return res.json('book DELETED ! DONE!');
+    })
+})
+
+
+
+
+
+
+
